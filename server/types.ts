@@ -41,6 +41,13 @@ export interface PaginatedResponse<T> {
 export interface SearchRequest extends PaginationParams {
   q: string;
   engine?: string;
+  /** Time range preset: week, month, year, custom */
+  time_range?: 'week' | 'month' | 'year' | 'custom';
+  /** Custom start date (YYYY-MM-DD), used with time_range=custom */
+  start_date?: string;
+  /** Custom end date (YYYY-MM-DD), used with time_range=custom */
+  end_date?: string;
+  /** @deprecated Use time_range instead */
   freshness?: 'day' | 'week' | 'month';
   with_citations?: boolean;
   mode?: 'simple' | 'ai';

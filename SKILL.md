@@ -274,8 +274,11 @@ scholarclaw search -q "transformer attention mechanism" -e arxiv -l 20
 # Search PubMed with AI mode
 scholarclaw search -q "COVID-19 vaccine efficacy" -e pubmed --mode ai
 
-# Search with freshness filter
-scholarclaw search -q "LLM reasoning" -e google --freshness week
+# Search with time range preset
+scholarclaw search -q "LLM reasoning" -e google --time-range month
+
+# Search with custom date range
+scholarclaw search -q "transformer" -e arxiv --time-range custom --start-date 2023-01-01 --end-date 2024-01-01
 ```
 
 ### 2. Scholar Search (Intelligent Academic Search)
@@ -375,7 +378,9 @@ Unified search across multiple engines.
 | limit | int | 100 | Total results to fetch |
 | page | int | 1 | Page number (1-indexed) |
 | page_size | int | 10 | Results per page |
-| freshness | string | null | Time filter: day, week, month |
+| time_range | string | null | Time range preset: week, month, year, custom |
+| start_date | string | null | Start date (YYYY-MM-DD), used with time_range=custom |
+| end_date | string | null | End date (YYYY-MM-DD), used with time_range=custom |
 | mode | string | simple | Search mode: simple, ai |
 | sort_by | string | relevance | Sort by: relevance, date |
 

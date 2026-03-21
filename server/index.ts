@@ -160,6 +160,13 @@ export class ScholarClawClient {
       limit?: number;
       page?: number;
       pageSize?: number;
+      /** Time range preset: week, month, year, custom */
+      timeRange?: 'week' | 'month' | 'year' | 'custom';
+      /** Custom start date (YYYY-MM-DD), used with timeRange=custom */
+      startDate?: string;
+      /** Custom end date (YYYY-MM-DD), used with timeRange=custom */
+      endDate?: string;
+      /** @deprecated Use timeRange instead */
       freshness?: 'day' | 'week' | 'month';
       mode?: SearchMode;
       sortBy?: 'relevance' | 'date';
@@ -179,8 +186,19 @@ export class ScholarClawClient {
       return_all: options?.returnAll ?? false,
     };
 
-    if (options?.freshness) {
-      params.freshness = options.freshness;
+    // Handle time range parameters
+    if (options?.timeRange) {
+      params.time_range = options.timeRange;
+      if (options.startDate) {
+        params.start_date = options.startDate;
+      }
+      if (options.endDate) {
+        params.end_date = options.endDate;
+      }
+    } else if (options?.freshness) {
+      // Backward compatibility: convert freshness to time_range
+      // 'day' maps to 'week' as the closest preset
+      params.time_range = options.freshness === 'day' ? 'week' : options.freshness;
     }
 
     return this.request('GET', '/search', { params });

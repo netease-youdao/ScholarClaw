@@ -42,7 +42,10 @@ Options:
     -l, --limit NUMBER        Total results to fetch (default: 100)
     -p, --page NUMBER         Page number, 1-indexed (default: 1)
     -ps, --page-size NUMBER   Results per page (default: 10)
-    -f, --freshness TEXT      Time filter: day, week, month
+    -tr, --time-range TEXT    Time range preset: week, month, year, custom
+    --start-date TEXT         Start date (YYYY-MM-DD), used with time-range=custom
+    --end-date TEXT           End date (YYYY-MM-DD), used with time-range=custom
+    -f, --freshness TEXT      Time filter: day, week, month (deprecated, use --time-range)
     -m, --mode MODE           Search mode: simple, ai (default: simple)
     -s, --sort-by SORT        Sort by: relevance, date (default: relevance)
     --with-citations          Include citation details (default: true)
@@ -52,7 +55,8 @@ Options:
 Examples:
     $(basename "$0") -q "transformer attention" -e arxiv -l 20
     $(basename "$0") -q "COVID-19 vaccine" -e pubmed --mode ai
-    $(basename "$0") -q "LLM reasoning" -e google --freshness week
+    $(basename "$0") -q "LLM reasoning" -e google --time-range month
+    $(basename "$0") -q "transformer" -e arxiv --time-range custom --start-date 2023-01-01 --end-date 2024-01-01
 
 Environment Variables:
     SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
@@ -66,6 +70,9 @@ ENGINE="bocha"
 LIMIT=100
 PAGE=1
 PAGE_SIZE=10
+TIME_RANGE=""
+START_DATE=""
+END_DATE=""
 FRESHNESS=""
 MODE="simple"
 SORT_BY="relevance"
@@ -93,6 +100,18 @@ while [[ $# -gt 0 ]]; do
             ;;
         -ps|--page-size)
             PAGE_SIZE="$2"
+            shift 2
+            ;;
+        -tr|--time-range)
+            TIME_RANGE="$2"
+            shift 2
+            ;;
+        --start-date)
+            START_DATE="$2"
+            shift 2
+            ;;
+        --end-date)
+            END_DATE="$2"
             shift 2
             ;;
         -f|--freshness)
@@ -141,8 +160,22 @@ SERVER_URL=$(get_server_url)
 ENCODED_QUERY=$(urlencode "$QUERY")
 URL="${SERVER_URL}/search?q=${ENCODED_QUERY}&engine=${ENGINE}&limit=${LIMIT}&page=${PAGE}&page_size=${PAGE_SIZE}&mode=${MODE}&sort_by=${SORT_BY}&with_citations=${WITH_CITATIONS}&return_all=${RETURN_ALL}"
 
-if [[ -n "$FRESHNESS" ]]; then
-    URL="${URL}&freshness=${FRESHNESS}"
+# Handle time range parameters
+if [[ -n "$TIME_RANGE" ]]; then
+    URL="${URL}&time_range=${TIME_RANGE}"
+    if [[ -n "$START_DATE" ]]; then
+        URL="${URL}&start_date=${START_DATE}"
+    fi
+    if [[ -n "$END_DATE" ]]; then
+        URL="${URL}&end_date=${END_DATE}"
+    fi
+elif [[ -n "$FRESHNESS" ]]; then
+    # Backward compatibility: convert freshness to time_range
+    if [[ "$FRESHNESS" == "day" ]]; then
+        URL="${URL}&time_range=week"
+    else
+        URL="${URL}&time_range=${FRESHNESS}"
+    fi
 fi
 
 # Execute search
