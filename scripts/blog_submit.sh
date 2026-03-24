@@ -34,7 +34,7 @@ Examples:
     $(basename "$0") -i 2303.14535 -f supplementary.pdf
 
 Environment Variables:
-    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
+    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: https://scholarclaw.youdao.com)
 EOF
 }
 
@@ -78,7 +78,7 @@ if [[ -z "$ARXIV_IDS" ]] && [[ ${#FILES[@]} -eq 0 ]]; then
 fi
 
 # Build curl command
-CURL_ARGS=(-s -w "\n%{http_code}" -X POST)
+CURL_ARGS=(-s --max-time 60 -w "\n%{http_code}" -X POST)
 
 # Add auth header if API key is set
 if [[ -n "$SCHOLARCLAW_API_KEY" ]]; then

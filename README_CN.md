@@ -46,7 +46,7 @@
 **方式一：自然语言安装（推荐）**
 
 ```
-"从 https://github.com/netease-youdao/scholarclaw 安装技能"
+"从 https://github.com/netease-youdao/scholarclaw 安装 Skill"
 ```
 
 **方式二：手动安装**
@@ -86,6 +86,9 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 # 搜索 ArXiv
 ./scripts/search.sh -q "transformer attention" -e arxiv -l 20
 
+# 时间范围过滤
+./scripts/search.sh -q "LLM reasoning" -e google --time-range month
+
 # AI 模式学术搜索
 ./scripts/scholar.sh -q "多模态学习的最新进展是什么？"
 ```
@@ -98,6 +101,9 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 
 # 获取引用列表
 ./scripts/citations.sh -i 1706.03762 -p 1 -ps 20
+
+# 通过 OpenAlex 查找论文并获取引用
+./scripts/openalex_find.sh -t "Attention Is All You Need" --fetch-works
 ```
 
 ### 博客生成
@@ -119,6 +125,25 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 
 # 流式模式（适用于长回复）
 ./scripts/benchmark_chat.sh -m "对比 GPT-4 和 Claude 在各项 benchmark 上的表现" -s
+```
+
+### 推荐功能
+
+```bash
+# HuggingFace 热门论文
+./scripts/recommend_papers.sh -l 12
+
+# 推荐博客
+./scripts/recommend_blogs.sh -l 10
+
+# 论文相关 GitHub 仓库
+./scripts/paper_repos.sh -i 2303.14535
+```
+
+### 健康检查
+
+```bash
+./scripts/health.sh
 ```
 
 ## 支持的搜索引擎
@@ -178,9 +203,9 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 
 ### 配置优先级
 
-1. 代码中的显式配置
-2. 环境变量
-3. LobsterAI 技能配置
+1. 环境变量
+2. LobsterAI 技能配置
+3. 配置文件（`~/.scholarclaw/config.json`）
 4. 默认值
 
 ## 技术栈
@@ -198,7 +223,6 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 scholarclaw/
 ├── server/                 # TypeScript 客户端
 │   ├── index.ts           # 主入口
-│   ├── client.ts          # HTTP 客户端
 │   ├── config.ts          # 配置
 │   └── types.ts           # 类型定义
 ├── scripts/               # Shell 脚本
@@ -212,6 +236,45 @@ scholarclaw/
 ├── README.md              # 英文文档
 └── README_CN.md           # 中文文档
 ```
+
+## 脚本速查表
+
+| 脚本 | 用途 | 示例 |
+|------|------|------|
+| `search.sh` | 统一搜索 | `./scripts/search.sh -q "query" -e arxiv` |
+| `scholar.sh` | 学术搜索 | `./scripts/scholar.sh -q "question?"` |
+| `citations.sh` | 引用列表 | `./scripts/citations.sh -i 1706.03762` |
+| `citations_stats.sh` | 引用统计 | `./scripts/citations_stats.sh -i 1706.03762` |
+| `openalex_cited.sh` | OpenAlex 引用 | `./scripts/openalex_cited.sh -w W123` |
+| `openalex_find.sh` | 查找论文 | `./scripts/openalex_find.sh -t "title"` |
+| `blog_submit.sh` | 提交博客 | `./scripts/blog_submit.sh -i 2303.14535` |
+| `blog_status.sh` | 博客状态 | `./scripts/blog_status.sh -i task_id` |
+| `blog_result.sh` | 博客结果 | `./scripts/blog_result.sh -i task_id` |
+| `benchmark_chat.sh` | SOTA 聊天 | `./scripts/benchmark_chat.sh -m "question"` |
+| `recommend_papers.sh` | 推荐论文 | `./scripts/recommend_papers.sh -l 12` |
+| `recommend_blogs.sh` | 推荐博客 | `./scripts/recommend_blogs.sh -l 10` |
+| `paper_repos.sh` | GitHub 仓库 | `./scripts/paper_repos.sh -i arxiv_id` |
+| `health.sh` | 健康检查 | `./scripts/health.sh` |
+
+## 常见问题
+
+**Q: 服务连接失败怎么办？**
+```bash
+# 检查服务是否可用
+curl https://scholarclaw.youdao.com/health
+
+# 检查环境变量
+echo $SCHOLARCLAW_SERVER_URL
+```
+
+**Q: 搜索结果为空？**
+1. 检查搜索引擎参数是否正确
+2. 尝试简化查询词
+3. 检查网络连接
+
+**Q: 博客生成时间过长？**
+
+博客生成通常需要 2-5 分钟，取决于论文长度和服务器负载。
 
 ## 联系我们
 

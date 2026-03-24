@@ -2,7 +2,7 @@
 name: scholarclaw
 description: |
   学术论文搜索与分析服务 (Academic paper search & analysis)。当用户涉及以下学术场景时，必须使用本 skill 而非 web-search：搜索论文、查找 ArXiv/PubMed/PapersWithCode 论文、查询 SOTA 榜单与 benchmark 结果、引用分析、生成论文解读博客、查找论文相关 GitHub 仓库、获取热门论文推荐。Keywords: arxiv, paper, papers, academic, scholar, research, 论文, 学术, 搜索论文, 找论文, SOTA, benchmark, MMLU, citation, 引用, 博客, blog, PapersWithCode, HuggingFace.
-version: 1.4.0
+version: 1.4.1
 official: false
 ---
 
@@ -121,23 +121,25 @@ data: {"type": "final_response", "response": "..."}         # Use as final resul
 
 ### Async Operations (Blog Generation)
 
-For blog generation and other long-running tasks, use async mode:
+**IMPORTANT: Blog generation takes 2-5 minutes. Always use async mode (3-step process). Never use synchronous `blog.sh` without `--no-wait`, as it will timeout.**
 
-1. **Submit task** - Use `--no-wait` flag or call `/api/blog/submit` directly
+For blog generation, use async mode:
+
+1. **Submit task** - Use `blog_submit.sh` or `blog.sh --no-wait`
    ```bash
-   scholarclaw blog -i 2303.14535 --no-wait
+   ./scripts/blog_submit.sh -i 2303.14535
    # Returns: {"task_id": "blog_abc123def456", "status": "pending"}
    ```
 
 2. **Poll status** - Check status every 10-15 seconds
    ```bash
-   scholarclaw blog-status -i blog_abc123def456
+   ./scripts/blog_status.sh -i blog_abc123def456
    # Returns: {"status": "processing", "progress": 50}
    ```
 
 3. **Fetch result** - When status is `completed`
    ```bash
-   scholarclaw blog-result -i blog_abc123def456
+   ./scripts/blog_result.sh -i blog_abc123def456
    # Returns: {"status": "completed", "content": "..."}
    ```
 
@@ -257,80 +259,78 @@ skills:
 
 The skill loads configuration in the following order (highest priority first):
 
-1. Explicit overrides in code
-2. Environment variables
-3. OpenClaw skill config
-4. Configuration file (`~/.scholarclaw/config.json`)
-5. Default values
+1. Environment variables
+2. OpenClaw skill config
+3. Configuration file (`~/.scholarclaw/config.json`)
+4. Default values
 
 ## Usage Examples
+
+**IMPORTANT: Use `./scripts/<script>.sh` to invoke commands. Do NOT use `scholarclaw` command as it requires separate installation.**
 
 ### 1. Unified Search
 
 ```bash
 # Search arXiv for transformer papers
-scholarclaw search -q "transformer attention mechanism" -e arxiv -l 20
+./scripts/search.sh -q "transformer attention mechanism" -e arxiv -l 20
 
 # Search PubMed with AI mode
-scholarclaw search -q "COVID-19 vaccine efficacy" -e pubmed --mode ai
+./scripts/search.sh -q "COVID-19 vaccine efficacy" -e pubmed --mode ai
 
 # Search with time range preset
-scholarclaw search -q "LLM reasoning" -e google --time-range month
+./scripts/search.sh -q "LLM reasoning" -e google --time-range month
 
 # Search with custom date range
-scholarclaw search -q "transformer" -e arxiv --time-range custom --start-date 2023-01-01 --end-date 2024-01-01
+./scripts/search.sh -q "transformer" -e arxiv --time-range custom --start-date 2023-01-01 --end-date 2024-01-01
 ```
 
 ### 2. Scholar Search (Intelligent Academic Search)
 
 ```bash
 # Smart academic search with query analysis
-scholarclaw scholar -q "What are the latest advances in multimodal learning?"
+./scripts/scholar.sh -q "What are the latest advances in multimodal learning?"
+
+# Limit results count
+./scripts/scholar.sh -q "RAG retrieval augmented generation" -l 15
 
 # With conversation context
-scholarclaw scholar -q "What about their computational efficiency?" --context '[{"role":"user","content":"Tell me about vision transformers"}]'
+./scripts/scholar.sh -q "What about their computational efficiency?" --context '[{"role":"user","content":"Tell me about vision transformers"}]'
 ```
 
 ### 3. Citation Analysis
 
 ```bash
 # Get citation statistics for an ArXiv paper
-scholarclaw citations-stats --arxiv-id 2303.14535
+./scripts/citations_stats.sh --arxiv-id 2303.14535
 
 # List papers citing an ArXiv paper
-scholarclaw citations --arxiv-id 2303.14535 --page 1 --page-size 20
+./scripts/citations.sh --arxiv-id 2303.14535 --page 1 --page-size 20
 ```
 
 ### 4. OpenAlex Citations
 
 ```bash
 # Find paper by title and get citations
-scholarclaw openalex-find --title "Attention Is All You Need" --author "Vaswani"
+./scripts/openalex_find.sh --title "Attention Is All You Need" --author "Vaswani"
 
 # Get citations by OpenAlex work ID
-scholarclaw openalex-cited --work-id "W2741809807"
+./scripts/openalex_cited.sh --work-id "W2741809807"
 ```
 
 ### 5. Blog Generation
 
 ```bash
-# Synchronous mode (recommended - waits for completion)
-scholarclaw blog -i 2303.14535
-
-# With custom timeout
-scholarclaw blog -i 2303.14535 -t 900
-
-# Async mode (submit only, for long-running tasks)
-scholarclaw blog -i 2303.14535 --no-wait
+# Async mode (submit only, recommended for skill usage)
+./scripts/blog_submit.sh -i 2303.14535
 
 # Check status later for async tasks
-scholarclaw blog-status -i blog_abc123def456
+./scripts/blog_status.sh -i blog_abc123def456
 
 # Get result when ready
-scholarclaw blog-result -i blog_abc123def456
+./scripts/blog_result.sh -i blog_abc123def456
 
 # Save blog to file
-scholarclaw blog -i 2303.14535 -o blog.md --content-only
+./scripts/blog_result.sh -i blog_abc123def456 -o blog.md --content-only
 ```
 
 ### 6. SOTA Chat
@@ -339,29 +339,29 @@ Query SOTA/Benchmark information via chat API.
 
 ```bash
 # Simple question
-scholarclaw sota-chat -m "What is the SOTA for MMLU benchmark?"
+./scripts/benchmark_chat.sh -m "What is the SOTA for MMLU benchmark?"
 
 # With conversation history
-scholarclaw sota-chat -m "What about GPQA?" -H '[{"role":"user","content":"Tell me about MMLU"}]'
+./scripts/benchmark_chat.sh -m "What about GPQA?" -H '[{"role":"user","content":"Tell me about MMLU"}]'
 
 # Streaming mode (for long responses)
-scholarclaw sota-chat -m "List recent SOTA results for reasoning benchmarks" -s
+./scripts/benchmark_chat.sh -m "List recent SOTA results for reasoning benchmarks" -s
 
 # Save to file
-scholarclaw sota-chat -m "Compare GPT-4 and Claude on various benchmarks" -o result.json
+./scripts/benchmark_chat.sh -m "Compare GPT-4 and Claude on various benchmarks" -o result.json
 ```
 
 ### 7. Recommendations
 
 ```bash
 # Get trending papers from HuggingFace
-scholarclaw recommend-papers --limit 12
+./scripts/recommend_papers.sh --limit 12
 
 # Get recommended blogs
-scholarclaw recommend-blogs --limit 10
+./scripts/recommend_blogs.sh --limit 10
 
 # Get GitHub repos for a paper
-scholarclaw paper-repos --arxiv-id 2303.14535
+./scripts/paper_repos.sh --arxiv-id 2303.14535
 ```
 
 ## API Reference
@@ -544,6 +544,6 @@ Error response format:
 
 ## Dependencies
 
-- Requires unified_search_server.py running on the configured URL
+- Requires the ScholarClaw API service (default: https://scholarclaw.youdao.com)
 - curl for HTTP requests
 - jq (optional) for JSON formatting

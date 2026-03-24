@@ -86,6 +86,10 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # Optional, apply at https://scholarc
 # Search ArXiv
 ./scripts/search.sh -q "transformer attention" -e arxiv -l 20
 
+
+# Search with time range
+./scripts/search.sh -q "LLM reasoning" -e google --time-range month
+
 # Scholar search with AI analysis
 ./scripts/scholar.sh -q "What are the latest advances in multimodal learning?"
 ```
@@ -98,6 +102,9 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # Optional, apply at https://scholarc
 
 # List citing papers
 ./scripts/citations.sh -i 1706.03762 -p 1 -ps 20
+
+# Find paper via OpenAlex and get citations
+./scripts/openalex_find.sh -t "Attention Is All You Need" --fetch-works
 ```
 
 ### Blog Generation
@@ -119,6 +126,25 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # Optional, apply at https://scholarc
 
 # Streaming mode for long responses
 ./scripts/benchmark_chat.sh -m "Compare GPT-4 and Claude on various benchmarks" -s
+```
+
+### Recommendations
+
+```bash
+# Get trending papers from HuggingFace
+./scripts/recommend_papers.sh -l 12
+
+# Get recommended blogs
+./scripts/recommend_blogs.sh -l 10
+
+# Get GitHub repos for a paper
+./scripts/paper_repos.sh -i 2303.14535
+```
+
+### Health Check
+
+```bash
+./scripts/health.sh
 ```
 
 ## Supported Search Engines
@@ -178,9 +204,9 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # Optional, apply at https://scholarc
 
 ### Configuration Priority
 
-1. Explicit overrides in code
-2. Environment variables
-3. LobsterAI skill config
+1. Environment variables
+2. LobsterAI skill config
+3. Configuration file (`~/.scholarclaw/config.json`)
 4. Default values
 
 ## Tech Stack
@@ -198,7 +224,6 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # Optional, apply at https://scholarc
 scholarclaw/
 ├── server/                 # TypeScript client
 │   ├── index.ts           # Main entry
-│   ├── client.ts          # HTTP client
 │   ├── config.ts          # Configuration
 │   └── types.ts           # Type definitions
 ├── scripts/               # Shell scripts
@@ -212,6 +237,45 @@ scholarclaw/
 ├── README.md              # English docs
 └── README_CN.md           # Chinese docs
 ```
+
+## Script Reference
+
+| Script | Usage | Example |
+|--------|-------|---------|
+| `search.sh` | Unified search | `./scripts/search.sh -q "query" -e arxiv` |
+| `scholar.sh` | Scholar search | `./scripts/scholar.sh -q "question?"` |
+| `citations.sh` | Citation list | `./scripts/citations.sh -i 1706.03762` |
+| `citations_stats.sh` | Citation stats | `./scripts/citations_stats.sh -i 1706.03762` |
+| `openalex_cited.sh` | OpenAlex citations | `./scripts/openalex_cited.sh -w W123` |
+| `openalex_find.sh` | Find paper | `./scripts/openalex_find.sh -t "title"` |
+| `blog_submit.sh` | Submit blog | `./scripts/blog_submit.sh -i 2303.14535` |
+| `blog_status.sh` | Blog status | `./scripts/blog_status.sh -i task_id` |
+| `blog_result.sh` | Blog result | `./scripts/blog_result.sh -i task_id` |
+| `benchmark_chat.sh` | SOTA chat | `./scripts/benchmark_chat.sh -m "question"` |
+| `recommend_papers.sh` | Trending papers | `./scripts/recommend_papers.sh -l 12` |
+| `recommend_blogs.sh` | Recommended blogs | `./scripts/recommend_blogs.sh -l 10` |
+| `paper_repos.sh` | GitHub repos | `./scripts/paper_repos.sh -i arxiv_id` |
+| `health.sh` | Health check | `./scripts/health.sh` |
+
+## FAQ
+
+**Q: Connection failed?**
+```bash
+# Check if the service is available
+curl https://scholarclaw.youdao.com/health
+
+# Verify your environment variable
+echo $SCHOLARCLAW_SERVER_URL
+```
+
+**Q: Empty search results?**
+1. Check search engine parameter is valid
+2. Try simplifying your query
+3. Check network connectivity
+
+**Q: Blog generation takes too long?**
+
+Blog generation typically takes 2-5 minutes depending on paper length and server load.
 
 ## Contact
 

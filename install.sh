@@ -147,10 +147,6 @@ alias sc-blog='blog.sh'
 alias sc-blog-submit='blog_submit.sh'
 alias sc-blog-status='blog_status.sh'
 alias sc-blog-result='blog_result.sh'
-alias sc-benchmark='benchmark.sh'
-alias sc-benchmark-submit='benchmark_submit.sh'
-alias sc-benchmark-list='benchmark_list.sh'
-alias sc-benchmark-result='benchmark_result.sh'
 alias sc-recommend-papers='recommend_papers.sh'
 alias sc-recommend-blogs='recommend_blogs.sh'
 alias sc-paper-repos='paper_repos.sh'
@@ -183,7 +179,7 @@ show_help() {
     echo "  scholar         学术搜索"
     echo "  citations       引用分析"
     echo "  blog            博客生成"
-    echo "  benchmark       Benchmark分析"
+    echo "  sota-chat       SOTA/Benchmark 问答"
     echo "  recommend       推荐"
     echo "  health          健康检查"
     echo ""
@@ -231,19 +227,8 @@ case "$COMMAND" in
             *) echo "未知命令: blog $1"; exit 1 ;;
         esac
         ;;
-    benchmark)
-        if [[ $# -lt 1 ]]; then
-            # Default: synchronous mode
-            exec "$SCRIPTS_DIR/benchmark.sh" "$@"
-        fi
-        # Check if first arg is a subcommand or an option
-        case "$1" in
-            submit) shift; exec "$SCRIPTS_DIR/benchmark_submit.sh" "$@" ;;
-            list)   shift; exec "$SCRIPTS_DIR/benchmark_list.sh" "$@" ;;
-            result) shift; exec "$SCRIPTS_DIR/benchmark_result.sh" "$@" ;;
-            -*) exec "$SCRIPTS_DIR/benchmark.sh" "$@" ;;  # Option: use sync mode
-            *) echo "未知命令: benchmark $1"; exit 1 ;;
-        esac
+    sota-chat)
+        exec "$SCRIPTS_DIR/benchmark_chat.sh" "$@"
         ;;
     recommend)
         if [[ $# -lt 1 ]]; then

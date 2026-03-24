@@ -52,7 +52,7 @@ Examples:
     $(basename "$0") -i "2303.14535,1706.03762"
 
 Environment Variables:
-    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
+    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: https://scholarclaw.youdao.com)
 EOF
 }
 
@@ -117,7 +117,7 @@ fi
 
 # Function to submit blog task
 submit_blog() {
-    local curl_args=(-s -w "\n%{http_code}" -X POST)
+    local curl_args=(-s --max-time 60 -w "\n%{http_code}" -X POST)
 
     # Add auth header if set
     if [[ -n "$SCHOLARCLAW_API_KEY" ]]; then
@@ -147,13 +147,13 @@ submit_blog() {
 # Function to check task status
 check_status() {
     local task_id="$1"
-    curl -s -w "\n%{http_code}" "${AUTH_HEADER[@]}" "${SERVER_URL}/api/blog/task/${task_id}"
+    curl -s --max-time 30 -w "\n%{http_code}" "${AUTH_HEADER[@]}" "${SERVER_URL}/api/blog/task/${task_id}"
 }
 
 # Function to get blog result
 get_result() {
     local task_id="$1"
-    curl -s -w "\n%{http_code}" "${AUTH_HEADER[@]}" "${SERVER_URL}/api/blog/result/${task_id}"
+    curl -s --max-time 30 -w "\n%{http_code}" "${AUTH_HEADER[@]}" "${SERVER_URL}/api/blog/result/${task_id}"
 }
 
 # Submit task

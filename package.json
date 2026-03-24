@@ -1,6 +1,6 @@
 {
   "name": "scholarclaw",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "ScholarClaw - 学术论文搜索与分析工具。支持 ArXiv/PubMed 等多源论文检索、引用分析、SOTA 榜单查询、论文解读博客生成等学术研究场景。",
   "main": "server/index.ts",
   "types": "server/types.ts",

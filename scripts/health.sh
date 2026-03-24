@@ -30,7 +30,7 @@ Examples:
     $(basename "$0") -v
 
 Environment Variables:
-    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
+    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: https://scholarclaw.youdao.com)
 EOF
 }
 
@@ -65,7 +65,7 @@ if [[ -n "$SCHOLARCLAW_API_KEY" ]]; then
     AUTH_HEADER=(-H "X-API-Key: $SCHOLARCLAW_API_KEY")
 fi
 
-RESPONSE=$(curl -s -w "\n%{http_code}" "${AUTH_HEADER[@]}" "${SERVER_URL}/health")
+RESPONSE=$(curl -s --max-time 10 -w "\n%{http_code}" "${AUTH_HEADER[@]}" "${SERVER_URL}/health")
 HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 BODY=$(echo "$RESPONSE" | sed '$d')
 

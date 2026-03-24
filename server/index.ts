@@ -290,7 +290,6 @@ export class ScholarClawClient {
   async submitBlog(arxivIds: string | string[], viewsContent?: string): Promise<{ task_id: string; status: string }> {
     const ids = Array.isArray(arxivIds) ? arxivIds.join(',') : arxivIds;
 
-    // Use FormData for multipart/form-data
     const formData = new URLSearchParams();
     formData.append('arxiv_ids', ids);
     if (viewsContent) {
@@ -449,7 +448,7 @@ export class ScholarClawClient {
     total: number;
     repos: GitHubRepo[];
   }> {
-    return this.request('GET', `/api/recommend/repos/${arxivId}`, {
+    return this.request('GET', `/api/recommend/paper/${arxivId}/detail`, {
       params: { min_stars: minStars },
     });
   }

@@ -59,7 +59,7 @@ Examples:
     $(basename "$0") -q "transformer" -e arxiv --time-range custom --start-date 2023-01-01 --end-date 2024-01-01
 
 Environment Variables:
-    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
+    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: https://scholarclaw.youdao.com)
     SCHOLARCLAW_API_KEY         API Key for authentication (optional)
 EOF
 }
@@ -185,7 +185,7 @@ echo "Engine: $ENGINE" >&2
 # Build curl arguments with auth header
 AUTH_HEADER=($(get_auth_header))
 
-RESPONSE=$(curl -s -w "\n%{http_code}" "${AUTH_HEADER[@]}" "$URL")
+RESPONSE=$(curl -s --max-time 30 -w "\n%{http_code}" "${AUTH_HEADER[@]}" "$URL")
 HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
 BODY=$(echo "$RESPONSE" | sed '$d')
 

@@ -39,7 +39,7 @@ Examples:
     $(basename "$0") -q "machine learning" --analyze-only
 
 Environment Variables:
-    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
+    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: https://scholarclaw.youdao.com)
 EOF
 }
 
@@ -63,7 +63,7 @@ while [[ $# -gt 0 ]]; do
             CONTEXT="$2"
             shift 2
             ;;
-        -m|--max-results)
+        -m|-l|--max-results|--limit)
             MAX_RESULTS="$2"
             shift 2
             ;;
@@ -141,7 +141,7 @@ if [[ -n "$SCHOLARCLAW_API_KEY" ]]; then
     AUTH_HEADER=(-H "X-API-Key: $SCHOLARCLAW_API_KEY")
 fi
 
-RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+RESPONSE=$(curl -s --max-time 60 -w "\n%{http_code}" -X POST \
     -H "Content-Type: application/json" \
     "${AUTH_HEADER[@]}" \
     -d "$PAYLOAD" \

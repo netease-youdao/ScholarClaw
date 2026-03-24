@@ -47,7 +47,7 @@ Examples:
     $(basename "$0") -m "Compare GPT-4 and Claude on various benchmarks" -o result.json
 
 Environment Variables:
-    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: http://localhost:8090)
+    SCHOLARCLAW_SERVER_URL      Base URL for the search server (default: https://scholarclaw.youdao.com)
 EOF
 }
 
