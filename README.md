@@ -213,6 +213,15 @@ skills/scholarclaw/
 └── README_CN.md           # Chinese docs
 ```
 
+## Contact
+
+- **Email**: scholarclaw@rd.netease.com
+- **WeChat Group**: Scan the QR code below to join the ScholarClaw community
+
+<div align="center">
+  <img src="group.jpg" alt="WeChat Group QR Code" width="300">
+</div>
+
 ## License
 
 MIT License

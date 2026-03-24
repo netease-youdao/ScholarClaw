@@ -213,6 +213,15 @@ skills/scholarclaw/
 └── README_CN.md           # 中文文档
 ```
 
+## 联系我们
+
+- **邮箱**：scholarclaw@rd.netease.com
+- **微信群**：扫描下方二维码加入 ScholarClaw 交流群
+
+<div align="center">
+  <img src="group.jpg" alt="微信群二维码" width="300">
+</div>
+
 ## 许可证
 
 MIT License
