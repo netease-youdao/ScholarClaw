@@ -56,7 +56,7 @@ Built by **NetEase Youdao**, it integrates seamlessly with the LobsterAI agent f
 git clone https://github.com/netease-youdao/scholarclaw.git
 
 # Copy skill to LobsterAI skills directory
-cp -r scholarclaw/skills/scholarclaw /path/to/lobsterai/SKILLs/
+cp -r scholarclaw /path/to/lobsterai/SKILLs/
 ```
 
 ### Configuration
@@ -195,7 +195,7 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # Optional, apply at https://scholarc
 ## Directory Structure
 
 ```
-skills/scholarclaw/
+scholarclaw/
 ├── server/                 # TypeScript client
 │   ├── index.ts           # Main entry
 │   ├── client.ts          # HTTP client

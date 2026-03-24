@@ -56,7 +56,7 @@
 git clone https://github.com/netease-youdao/scholarclaw.git
 
 # 复制技能到 LobsterAI 技能目录
-cp -r scholarclaw/skills/scholarclaw /path/to/lobsterai/SKILLs/
+cp -r scholarclaw /path/to/lobsterai/SKILLs/
 ```
 
 ### 配置
@@ -195,7 +195,7 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 ## 目录结构
 
 ```
-skills/scholarclaw/
+scholarclaw/
 ├── server/                 # TypeScript 客户端
 │   ├── index.ts           # 主入口
 │   ├── client.ts          # HTTP 客户端
