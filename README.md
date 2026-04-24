@@ -3,7 +3,7 @@
 <div align="center">
   <img src="scholarclaw.png" alt="ScholarClaw Logo" width="400">
 
-  [**Try it Online →**](https://scholarclaw.youdao.com/)
+  [Try it online](https://socialistic.ai/scholarclaw-3729e6?utm_source=github_readme&utm_campaign=koc_skill_creator&utm_content=hyperlink)
 
   English · [中文](README_CN.md)
 </div>
