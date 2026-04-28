@@ -1,7 +1,6 @@
 ---
 name: scholarclaw
-description: |
-  学术论文搜索与分析服务 (Academic paper search & analysis)。当用户涉及以下学术场景时，必须使用本 skill 而非 web-search：搜索论文、查找 ArXiv/PubMed/PapersWithCode 论文、查询 SOTA 榜单与 benchmark 结果、引用分析、生成论文解读博客、查找论文相关 GitHub 仓库、获取热门论文推荐。Keywords: arxiv, paper, papers, academic, scholar, research, 论文, 学术, 搜索论文, 找论文, SOTA, benchmark, MMLU, citation, 引用, 博客, blog, PapersWithCode, HuggingFace.
+description: "学术论文搜索与分析服务 (Academic paper search & analysis)。当用户涉及以下学术场景时，必须使用本 skill 而非 web-search：搜索论文、查找 ArXiv/PubMed/PapersWithCode 论文、查询 SOTA 榜单与 benchmark 结果、引用分析、生成论文解读博客、查找论文相关 GitHub 仓库、获取热门论文推荐。Keywords: arxiv, paper, papers, academic, scholar, research, 论文, 学术, 搜索论文, 找论文, SOTA, benchmark, MMLU, citation, 引用, 博客, blog, PapersWithCode, HuggingFace."
 version: 1.4.1
 official: false
 ---
@@ -14,68 +13,15 @@ ScholarClaw is a comprehensive academic search and paper analysis service that p
 
 **IMPORTANT: Use this skill (NOT web-search) for any academic/scientific paper related queries.**
 
-### Primary Triggers (Always Use This Skill)
-- User mentions **academic papers**, **research papers**, **ArXiv**, **preprints**
-- User asks to **search papers** or **find papers** on a topic
-- User wants **SOTA** (State of the Art) or **benchmark** results
-- User needs **citation analysis** or citation counts
-- User wants to generate a **blog post** from a paper
-- User mentions **ArXiv IDs** (e.g., "2303.14535")
+Trigger when the user:
+- Searches for **academic papers** or **research articles** on ArXiv, PubMed, NeurIPS, CVPR, or other academic databases
+- Asks about **SOTA** (State of the Art) or **benchmark** results (MMLU, GPQA, GSM8K, HumanEval, MATH, etc.)
+- Needs **citation analysis**, citation counts, or related work through citation networks
+- Wants to **generate a blog post** from a paper or get detailed paper analysis
+- Mentions **ArXiv IDs** (e.g., "2303.14535") or requests paper lookups by title/author
+- Asks for **trending papers**, recommendations, or GitHub repositories related to a paper
 
-### Automatic Trigger Keywords
-- arxiv, paper, papers, academic, scholar, scientific, research article
-- SOTA, benchmark, MMLU, GPQA, GSM8K, HumanEval
-- citation, citations, cited by
-- paper blog, blog from paper
-- PapersWithCode, Semantic Scholar, Google Scholar
-
-### When NOT to Use This Skill
-- General web search for non-academic content
-- Current news, events, or general information
-- Product comparisons or reviews
-
-### Academic Paper Search
-- User wants to search for academic papers, research articles, or preprints
-- User asks about papers on a specific topic (e.g., "Find papers about transformers")
-- User needs literature review or related work information
-- User mentions ArXiv, PubMed, NeurIPS, CVPR, or academic databases
-- User asks to find "latest" or "recent" papers on a topic
-
-### SOTA/Benchmark Queries
-- User asks about SOTA (State of the Art) results on any benchmark
-- User mentions specific benchmarks: MMLU, GPQA, GSM8K, HumanEval, MATH, etc.
-- User wants to compare model performance on benchmarks
-- User asks "What is the best model for..." or "What's the SOTA for..."
-- User wants to know about benchmark datasets or evaluation metrics
-
-### Citation Analysis
-- User wants to find papers citing a specific paper
-- User asks about citation count or impact of a paper
-- User needs to find related work through citation networks
-- User provides an ArXiv ID and asks about citations
-
-### Paper Analysis & Blog Generation
-- User wants a summary or blog-style explanation of a paper
-- User asks to "explain this paper" or "write about this paper"
-- User wants to generate content from academic papers
-- User provides an ArXiv ID and asks for detailed analysis
-
-### Research Recommendations
-- User wants trending or popular papers
-- User asks for paper recommendations
-- User wants to find GitHub repositories related to a paper
-
-### Key Trigger Phrases
-- "Search for papers about..."
-- "What's the SOTA for..."
-- "Find citations of..."
-- "Latest research on..."
-- "Compare models on..."
-- "Benchmark results for..."
-- "ArXiv paper..."
-- "Generate blog from paper..."
-- "Trending papers..."
-- "What is the best performing model on..."
+**Do not use** for general web search, current news, or non-academic content.
 
 ## Execution Guidelines
 
@@ -219,20 +165,6 @@ curl --max-time 300 "${SCHOLARCLAW_SERVER_URL}/api/blog/submit" ...
 
 API Key 为可选配置。部分高级功能可能需要鉴权，如需申请 API Key，请前往 [ScholarClaw 网站](https://scholarclaw.youdao.com/) 申请。
 
-### Configuration File (Recommended)
-
-Create a configuration file at `~/.scholarclaw/config.json`:
-
-```json
-{
-  "apiKey": "your-api-key",
-  "serverUrl": "https://scholarclaw.youdao.com",
-  "timeout": 30000,
-  "maxRetries": 3,
-  "debug": false
-}
-```
-
 ### Environment Variables
 
 ```bash
@@ -241,19 +173,7 @@ export SCHOLARCLAW_API_KEY="your-api-key"  # 可选，前往 https://scholarclaw
 export SCHOLARCLAW_DEBUG="false"
 ```
 
-### OpenClaw Config (config.yaml)
-
-```yaml
-skills:
-  - name: scholarclaw
-    enabled: true
-    config:
-      serverUrl: "https://scholarclaw.youdao.com"
-      apiKey: "your-api-key"  # 可选，前往 https://scholarclaw.youdao.com/ 申请
-      timeout: 30000
-      maxRetries: 3
-      debug: false
-```
+Alternative configuration via `~/.scholarclaw/config.json` or OpenClaw `config.yaml` is documented in the [README](README.md).
 
 ### Configuration Priority
 
@@ -366,181 +286,23 @@ Query SOTA/Benchmark information via chat API.
 
 ## API Reference
 
-### Search Endpoints
+All endpoints are served at `${SCHOLARCLAW_SERVER_URL}` (default: `https://scholarclaw.youdao.com`).
 
-#### GET /search
-Unified search across multiple engines.
+| Method | Endpoint | Key Parameters | Description |
+|--------|----------|---------------|-------------|
+| GET | `/search` | `q`, `engine`, `limit`, `page`, `time_range` | Unified multi-engine search |
+| POST | `/scholar/search` | `query`, `max_results`, `search_engine` | Intelligent academic search with reranking |
+| GET | `/citations` | `arxiv_id`, `page`, `page_size`, `sort_by` | List papers citing an ArXiv paper |
+| GET | `/citations/stats` | `arxiv_id` | Citation statistics for an ArXiv paper |
+| GET | `/openalex/find_and_cited_by` | `title`, `author_name`, `limit` | Find paper and get citations via OpenAlex |
+| POST | `/api/blog/submit` | `arxiv_ids`, `views_content` | Submit async blog generation task |
+| GET | `/api/blog/result/{task_id}` | — | Get blog generation result |
+| POST | `/api/benchmark/chat` | `message`, `history` | SOTA/benchmark chat query |
+| POST | `/api/benchmark/chat/stream` | `message`, `history` | Streaming SOTA chat (SSE) |
+| GET | `/api/recommend/papers` | `limit` | Trending papers from HuggingFace |
+| GET | `/api/recommend/blogs` | `limit` | Recommended blog articles |
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| q | string | required | Search query |
-| engine | string | bocha | Search engine: arxiv, pubmed, google, kuake, bocha, cache, nips |
-| limit | int | 100 | Total results to fetch |
-| page | int | 1 | Page number (1-indexed) |
-| page_size | int | 10 | Results per page |
-| time_range | string | null | Time range preset: week, month, year, custom |
-| start_date | string | null | Start date (YYYY-MM-DD), used with time_range=custom |
-| end_date | string | null | End date (YYYY-MM-DD), used with time_range=custom |
-| mode | string | simple | Search mode: simple, ai |
-| sort_by | string | relevance | Sort by: relevance, date |
-
-#### POST /scholar/search
-Intelligent academic search with query analysis.
-
-```json
-{
-  "query": "What are the latest advances in multimodal learning?",
-  "messages": [{"role": "user", "content": "..."}],
-  "max_results": 20,
-  "search_engine": "arxiv",
-  "enable_citation_expansion": true,
-  "enable_rerank": true
-}
-```
-
-### Citation Endpoints
-
-#### GET /citations
-List papers citing an ArXiv paper.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| arxiv_id | string | required | ArXiv paper ID |
-| page | int | 1 | Page number |
-| page_size | int | 20 | Results per page |
-| sort_by | string | citation_count | Sort by: citation_count, date |
-
-#### GET /citations/stats
-Get citation statistics for an ArXiv paper.
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| arxiv_id | string | ArXiv paper ID |
-
-### OpenAlex Endpoints
-
-#### GET /openalex/find_and_cited_by
-Find paper by title and get citations.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| title | string | required | Paper title |
-| author_name | string | "" | Author name (optional) |
-| limit | int | 20 | Max results |
-| fetch_citing_works | bool | false | Fetch citing works list |
-
-### Blog Endpoints
-
-#### POST /api/blog/submit
-Submit blog generation task.
-
-```bash
-curl -X POST "${SCHOLARCLAW_SERVER_URL}/api/blog/submit" \
-  -F "arxiv_ids=2303.14535" \
-  -F "views_content=Optional user views"
-```
-
-#### GET /api/blog/result/{task_id}
-Get blog generation result.
-
-### SOTA Chat Endpoints
-
-#### POST /api/benchmark/chat
-Send a chat message for SOTA/Benchmark queries.
-
-```json
-{
-  "message": "What is the SOTA for MMLU benchmark?",
-  "history": [{"role": "user", "content": "..."}]
-}
-```
-
-Response:
-```json
-{
-  "response": "The current SOTA for MMLU is...",
-  "tool_calls": [...]
-}
-```
-
-#### POST /api/benchmark/chat/stream
-Streaming chat endpoint (SSE).
-
-Same request format, returns Server-Sent Events.
-
-### Recommendation Endpoints
-
-#### GET /api/recommend/papers
-Get trending papers from HuggingFace.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| limit | int | 12 | Number of papers (1-50) |
-
-#### GET /api/recommend/blogs
-Get recommended blog articles.
-
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| limit | int | 10 | Number of blogs (1-50) |
-
-## Response Formats
-
-### Search Result
-```json
-{
-  "results": [
-    {
-      "id": "2303.14535",
-      "title": "Paper Title",
-      "abstract": "Paper abstract...",
-      "authors": "Author 1, Author 2",
-      "year": 2023,
-      "url": "https://arxiv.org/abs/2303.14535",
-      "pdf_url": "https://arxiv.org/pdf/2303.14535.pdf",
-      "source": "arxiv"
-    }
-  ],
-  "total": 100,
-  "page": 1,
-  "page_size": 10,
-  "total_pages": 10,
-  "has_next": true
-}
-```
-
-### Scholar Search Result
-```json
-{
-  "query": "Original query",
-  "results": [...],
-  "summary": "AI-generated summary of findings",
-  "analysis": {
-    "core_question": "Extracted core question",
-    "keyword_queries": ["keyword1", "keyword2"],
-    "semantic_queries": ["semantic query 1"],
-    "search_engine": "arxiv"
-  },
-  "total_results": 20
-}
-```
-
-## Error Handling
-
-All endpoints return standard HTTP status codes:
-- `200` - Success
-- `400` - Bad request (invalid parameters)
-- `404` - Not found
-- `500` - Internal server error
-- `503` - Service unavailable
-- `504` - Gateway timeout
-
-Error response format:
-```json
-{
-  "detail": "Error message describing the issue"
-}
-```
+All endpoints return `{"detail": "Error message"}` on error. Search results include pagination fields (`total`, `page`, `page_size`, `has_next`). See [examples/](examples/) for response schemas and detailed parameter documentation.
 
 ## Dependencies
 
